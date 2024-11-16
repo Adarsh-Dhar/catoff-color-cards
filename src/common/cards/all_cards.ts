@@ -63,7 +63,20 @@ export interface AllCard {
     { color: 'yellow', character: 11, serialNumber: 47 },
     { color: 'yellow', character: 12, serialNumber: 48 },
   
-    // Multicolor Cards (2)
+    // Multicolor Cards (8)
     { color: 'multicolor', character: 13, serialNumber: 49 }, // Wild
-    { color: 'multicolor', character: 14, serialNumber: 50 }  // +4
+    { color: 'multicolor', character: 13, serialNumber: 50 }, // Wild
+
+    { color: 'multicolor', character: 13, serialNumber: 51 }, // Wild
+
+    { color: 'multicolor', character: 13, serialNumber: 52 }, // Wild
+
+    { color: 'multicolor', character: 14, serialNumber: 53 } , // +4
+    { color: 'multicolor', character: 14, serialNumber: 54 },  // +4
+
+    { color: 'multicolor', character: 14, serialNumber: 55 } , // +4
+
+    { color: 'multicolor', character: 14, serialNumber: 56 }  // +4
+
+
   ];  

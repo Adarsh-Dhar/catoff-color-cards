@@ -1,6 +1,6 @@
 import { ALL_CARDS, AllCard } from '../cards/all_cards';
 
-export function generateRandomCardsAndDistribute(): { 
+export function split(): { 
     players: Record<string, AllCard[]>; 
     deck: AllCard[]; 
 } {
@@ -32,7 +32,7 @@ export function generateRandomCardsAndDistribute(): {
 }
 
 // Example usage:
-const { players, deck } = generateRandomCardsAndDistribute();
+const { players, deck } = split();
 console.log(players);
 console.log(deck);
 
