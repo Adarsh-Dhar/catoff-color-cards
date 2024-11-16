@@ -1,11 +1,11 @@
-import Card from "../common/cards"
+import {Try} from "../common/game/try"
 
 // import { Sparkles } from "lucide-react"
 
 export default function Component() {
   return (
     <div>
-      <Card  character= {13} />
+      <Try />
     </div>
   )
 }
