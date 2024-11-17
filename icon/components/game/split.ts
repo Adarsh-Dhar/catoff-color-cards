@@ -11,8 +11,8 @@ export function split(): {
     const shuffledCards = cardsCopy.sort(() => Math.random() - 0.5);
 
     // Step 3: Select the first 24 cards and separate the remaining as the deck
-    const selectedCards = shuffledCards.slice(0, 32);
-    const remainingDeck = shuffledCards.slice(32);
+    const selectedCards = shuffledCards.slice(0, 24);
+    const remainingDeck = shuffledCards.slice(24);
 
     // Step 4: Distribute the selected cards among 4 players
     const players: Record<string, AllCard[]> = {
@@ -38,3 +38,4 @@ console.log(deck);
 
 // Export the deck for external use
 export const DECK = deck;
+export const PLAYERS = players;

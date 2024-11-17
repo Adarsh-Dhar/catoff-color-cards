@@ -3,7 +3,8 @@ import { useState } from "react";
 import {split} from "./split"
 import { getCardByCall, AllCard } from "../cards/all_cards";
 import { set } from "@coral-xyz/anchor/dist/cjs/utils/features";
-import Card from "../cards/card_design";
+import Card from "../cards/card_front";
+import CardBack from "../cards/card_back";
 
 export const Game = () => {
     const {deck, players} = split()
@@ -364,30 +365,7 @@ export const Game = () => {
         );
     }
 
-    const renderColorPicker = () => (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg">
-                <h3 className="text-xl font-bold mb-4">Choose a color</h3>
-                <div className="grid grid-cols-2 gap-4">
-                    {colorOptions.map((color) => (
-                        <button
-                            key={color}
-                            onClick={() => {
-                                newColor(color);
-                                setShowColorPicker(false);
-                            }}
-                            className={`w-24 h-24 rounded-lg ${
-                                color === 'red' ? 'bg-red-600' :
-                                color === 'blue' ? 'bg-blue-600' :
-                                color === 'green' ? 'bg-green-600' :
-                                'bg-yellow-500'
-                            }`}
-                        />
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
+   
 
     return (
         <div className="min-h-screen bg-gray-100 p-8">
@@ -417,15 +395,13 @@ export const Game = () => {
                     <div className="flex justify-center gap-8">
                         {/* Draw Pile */}
                         <div className="text-center">
-                            <h3 className="text-lg font-bold mb-2">Draw Pile ({drawCardPile.length})</h3>
+                            <h3 className="text-lg font-bold mb-2 text-black">Draw Pile ({drawCardPile.length})</h3>
                             <button
                                 onClick={() => drawRandomCard(turn)}
                                 className="transform hover:scale-105 transition-transform"
                                 disabled={drawCardPile.length === 0}
                             >
-                                <div className="w-32 h-48 bg-red-600 rounded-xl shadow-lg flex items-center justify-center">
-                                    <span className="text-white text-4xl font-bold">UNO</span>
-                                </div>
+                                <CardBack />
                             </button>
                         </div>
 
@@ -451,7 +427,7 @@ export const Game = () => {
                 </div>
 
                 {/* Color Picker Modal */}
-                {showColorPicker && renderColorPicker()}
+               
 
                 {/* Game Over State */}
                 {gameOver && (

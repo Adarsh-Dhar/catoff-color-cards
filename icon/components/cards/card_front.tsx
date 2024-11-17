@@ -72,7 +72,7 @@ const Card: React.FC<UnoCardProps> = ({
 
   return (
     <div
-      className={`relative w-32 h-48 rounded-xl ${colorClasses[effectiveColor]} shadow-lg`}
+      className={`relative w-16 h-24 rounded-xl ${colorClasses[effectiveColor]} shadow-lg`}
       style={backgroundStyle}
     >
       {/* Card Border */}
@@ -95,7 +95,7 @@ const Card: React.FC<UnoCardProps> = ({
           {/* Center Oval with Number */}
           <div className="absolute inset-0 flex items-center justify-center">
             <div
-              className={`w-24 h-24 ${colorClasses[effectiveColor]} transform rotate-45 border-4 border-white`}
+              className={`w-12 h-12 ${colorClasses[effectiveColor]} transform rotate-45 border-4 border-white`}
               style={backgroundStyle}
             >
               <div className="w-full h-full -rotate-45 flex items-center justify-center">
