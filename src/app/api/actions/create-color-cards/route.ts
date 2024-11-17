@@ -3,6 +3,7 @@ import {
   ActionGetResponse,
   ActionPostRequest,
   createActionHeaders,
+  NextAction
 } from "@solana/actions";
 import { clusterApiUrl, Connection, PublicKey, Transaction } from "@solana/web3.js";
 import { BN, Program } from "@coral-xyz/anchor";
@@ -25,12 +26,6 @@ export const GET = async (req: Request) => {
           label: "Create an Uno Game",
           href: "/api/actions/create-color-cards?player2={player2}&player3={player3}&player4={player4}",
           parameters: [
-            {
-              name: "player-1",
-              label: "Enter the wallet address of player1",
-              required: true,
-              type: "text",
-            },
             {
               name: "player-2",
               label: "Enter the wallet address of player2",
@@ -66,13 +61,13 @@ export const POST = async (req: Request) => {
 
     const url = new URL(req.url);
     const player2Address = url.searchParams.get("player2");
-    console.log("Addrress of player2:", player2Address);
+    console.log("Address of player2:", player2Address);
 
     const player3Address = url.searchParams.get("player3");
-    console.log("Addrress of player3:", player3Address);
+    console.log("Address of player3:", player3Address);
 
     const player4Address = url.searchParams.get("player4");
-    console.log("Addrress of player4:", player4Address);
+    console.log("Address of player4:", player4Address);
     // const secretNumberStr = url.searchParams.get("secret-number");
     // console.log("Secret number:", secretNumberStr);
 
