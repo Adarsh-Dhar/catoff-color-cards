@@ -24,7 +24,7 @@ export const GET = async (req: Request) => {
         {
           type: "transaction",
           label: "Create an Uno Game",
-          href: "/api/actions/create-color-cards?player2={player2}&player3={player3}&player4={player4}",
+          href: "/api/actions/create-color-cards",
           parameters: [
             {
               name: "player-2",
@@ -32,18 +32,7 @@ export const GET = async (req: Request) => {
               required: true,
               type: "text",
             },
-            {
-              name: "player-3",
-              label: "Enter the wallet address of player3",
-              required: true,
-              type: "text",
-            },
-            {
-              name: "player-4",
-              label: "Enter the wallet address of player4",
-              required: true,
-              type: "text",
-            },
+           
           ],
         },
       ],
@@ -63,11 +52,6 @@ export const POST = async (req: Request) => {
     const player2Address = url.searchParams.get("player2");
     console.log("Address of player2:", player2Address);
 
-    const player3Address = url.searchParams.get("player3");
-    console.log("Address of player3:", player3Address);
-
-    const player4Address = url.searchParams.get("player4");
-    console.log("Address of player4:", player4Address);
     // const secretNumberStr = url.searchParams.get("secret-number");
     // console.log("Secret number:", secretNumberStr);
 
@@ -102,20 +86,18 @@ export const POST = async (req: Request) => {
     const { stateAccount, pdaAccount } = await deriveChallangePda(program);
     console.log("pda account", pdaAccount.toJSON());
     
-    if (!player2Address || !player3Address || !player4Address) {
+    if (!player2Address ) {
       alert("addresses of all the players are necessary")
       return;
     }
 
     const player2PublicKey = new PublicKey(player2Address);
-    const player3PublicKey = new PublicKey(player3Address);
-    const player4PublicKey = new PublicKey(player4Address);
+  
 
     const instruction = await program.methods
       .initialize_game(
         player2PublicKey,
-        player3PublicKey,
-        player4PublicKey
+
       )
       .accounts({
         player1: userAccount, 
@@ -141,7 +123,7 @@ export const POST = async (req: Request) => {
         links: {
           next: {
             type: "post",
-            href: `/api/actions/create-color-cards/next?game-id=${stateAccount.current_game_id}`, //need to change the currentChallengeId
+            href: `/api/actions/create-color-cards/next?player-2=${player2Address}&game-id=${stateAccount.current_game_id}`, //need to change the currentChallengeId
           },
         },
       },

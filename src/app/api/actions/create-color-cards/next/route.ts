@@ -1,5 +1,17 @@
-import { getIconUrl } from "@/common/helper/guess.helper";
-import { ActionError, CompletedAction, createActionHeaders } from "@solana/actions";
+
+import { ActionError, CompletedAction } from "@solana/actions";
+import {
+  createPostResponse,
+  ActionGetResponse,
+  ActionPostRequest,
+  createActionHeaders,
+  NextAction
+} from "@solana/actions";
+import { clusterApiUrl, Connection, PublicKey, Transaction } from "@solana/web3.js";
+import { BN, Program } from "@coral-xyz/anchor";
+import { ColorCards } from "@/common/color_card";
+import idl from "@/common/idl/uno_game.json";
+import { deriveChallangePda, getIconUrl } from "@/common/helper/guess.helper";
 
 const headers = createActionHeaders();
 
@@ -17,7 +29,7 @@ export const POST = async (req: Request) => {
 
   const challengeId = baseUrl.searchParams.get("challenge-id");
   const href = new URL(
-    `/api/actions/guess?challenge-id=${challengeId}&cluster=devnet`,
+    `/api/actions/create-color-cards/next?game-id=${challengeId}&cluster=devnet`,
     process.env.ENV === "prod"
       ? "https://blinks-game.onrender.com/api/actions/create-guess-challange"
       : "http://localhost:3000",

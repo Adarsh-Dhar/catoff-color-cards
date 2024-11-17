@@ -1,4 +1,4 @@
-export type ColorCards = {
+export type ColorCards ={
     "address": "CcavjFofgadiL2GH4pPHpXzXQMHbMMcdivofwuZGypoR",
     "metadata": {
       "name": "uno_game",
@@ -8,16 +8,41 @@ export type ColorCards = {
     },
     "instructions": [
       {
-        "name": "end_game",
+        "name": "get_player_card_count",
         "discriminator": [
-          224,
-          135,
-          245,
-          99,
-          67,
-          175,
+          90,
+          192,
+          218,
+          70,
+          56,
+          246,
+          211,
+          86
+        ],
+        "accounts": [
+          {
+            "name": "game",
+            "writable": true
+          },
+          {
+            "name": "player",
+            "writable": true,
+            "signer": true
+          }
+        ],
+        "args": []
+      },
+      {
+        "name": "get_player_cards",
+        "discriminator": [
+          30,
+          234,
           121,
-          252
+          210,
+          174,
+          219,
+          32,
+          100
         ],
         "accounts": [
           {
@@ -64,28 +89,20 @@ export type ColorCards = {
           {
             "name": "player2",
             "type": "pubkey"
-          },
-          {
-            "name": "player3",
-            "type": "pubkey"
-          },
-          {
-            "name": "player4",
-            "type": "pubkey"
           }
         ]
       },
       {
-        "name": "join_game",
+        "name": "play_card",
         "discriminator": [
-          107,
-          112,
-          18,
-          38,
-          56,
-          173,
-          60,
-          128
+          63,
+          150,
+          161,
+          24,
+          68,
+          231,
+          108,
+          9
         ],
         "accounts": [
           {
@@ -98,7 +115,12 @@ export type ColorCards = {
             "signer": true
           }
         ],
-        "args": []
+        "args": [
+          {
+            "name": "card_to_play",
+            "type": "string"
+          }
+        ]
       }
     ],
     "accounts": [
@@ -136,81 +158,44 @@ export type ColorCards = {
         "code": 6003,
         "name": "UnauthorizedGameEnd",
         "msg": "Only the host can end the game"
+      },
+      {
+        "code": 6004,
+        "name": "InvalidPlayer",
+        "msg": "Invalid player"
+      },
+      {
+        "code": 6005,
+        "name": "InvalidCardPlay",
+        "msg": "Invalid card play"
+      },
+      {
+        "code": 6006,
+        "name": "NoCardsAvailable",
+        "msg": "No cards are available"
+      },
+      {
+        "code": 6007,
+        "name": "GameNotInProgress",
+        "msg": "Game is not in progress"
+      },
+      {
+        "code": 6008,
+        "name": "NotYourTurn",
+        "msg": "Please wait for the other player to play"
       }
     ],
     "types": [
       {
-        "name": "Card",
-        "type": {
-          "kind": "struct",
-          "fields": [
-            {
-              "name": "color",
-              "type": {
-                "defined": {
-                  "name": "CardColor"
-                }
-              }
-            },
-            {
-              "name": "value",
-              "type": {
-                "defined": {
-                  "name": "CardValue"
-                }
-              }
-            }
-          ]
-        }
-      },
-      {
-        "name": "CardColor",
+        "name": "Direction",
         "type": {
           "kind": "enum",
           "variants": [
             {
-              "name": "Red"
+              "name": "Clockwise"
             },
             {
-              "name": "Blue"
-            },
-            {
-              "name": "Green"
-            },
-            {
-              "name": "Yellow"
-            },
-            {
-              "name": "Wild"
-            }
-          ]
-        }
-      },
-      {
-        "name": "CardValue",
-        "type": {
-          "kind": "enum",
-          "variants": [
-            {
-              "name": "Number",
-              "fields": [
-                "u8"
-              ]
-            },
-            {
-              "name": "Skip"
-            },
-            {
-              "name": "Reverse"
-            },
-            {
-              "name": "DrawTwo"
-            },
-            {
-              "name": "Wild"
-            },
-            {
-              "name": "WildDrawFour"
+              "name": "AntiClockwise"
             }
           ]
         }
@@ -233,14 +218,6 @@ export type ColorCards = {
               "type": "pubkey"
             },
             {
-              "name": "player3",
-              "type": "pubkey"
-            },
-            {
-              "name": "player4",
-              "type": "pubkey"
-            },
-            {
               "name": "game_state",
               "type": {
                 "defined": {
@@ -249,40 +226,47 @@ export type ColorCards = {
               }
             },
             {
-              "name": "current_turn",
+              "name": "total_play",
               "type": "u8"
             },
             {
-              "name": "direction",
-              "type": "bool"
+              "name": "current_turn",
+              "type": "string"
             },
             {
-              "name": "current_card",
+              "name": "direction",
               "type": {
-                "option": {
-                  "defined": {
-                    "name": "Card"
-                  }
+                "defined": {
+                  "name": "Direction"
                 }
               }
             },
             {
-              "name": "current_players",
-              "type": "u8"
+              "name": "current_card",
+              "type": "string"
             },
             {
-              "name": "players",
+              "name": "draw_deck",
               "type": {
-                "array": [
-                  {
-                    "option": {
-                      "defined": {
-                        "name": "PlayerState"
-                      }
-                    }
-                  },
-                  4
-                ]
+                "vec": "string"
+              }
+            },
+            {
+              "name": "player1_deck",
+              "type": {
+                "vec": "string"
+              }
+            },
+            {
+              "name": "player2_deck",
+              "type": {
+                "vec": "string"
+              }
+            },
+            {
+              "name": "played_deck",
+              "type": {
+                "vec": "string"
               }
             }
           ]
@@ -301,26 +285,6 @@ export type ColorCards = {
             },
             {
               "name": "Ended"
-            }
-          ]
-        }
-      },
-      {
-        "name": "PlayerState",
-        "type": {
-          "kind": "struct",
-          "fields": [
-            {
-              "name": "player_pubkey",
-              "type": "pubkey"
-            },
-            {
-              "name": "cards_count",
-              "type": "u8"
-            },
-            {
-              "name": "has_uno",
-              "type": "bool"
             }
           ]
         }
