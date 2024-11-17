@@ -8,16 +8,16 @@
   },
   "instructions": [
     {
-      "name": "declare_uno",
+      "name": "end_game",
       "discriminator": [
-        61,
-        124,
-        190,
-        179,
-        139,
-        171,
-        213,
-        42
+        224,
+        135,
+        245,
+        99,
+        67,
+        175,
+        121,
+        252
       ],
       "accounts": [
         {
@@ -26,6 +26,7 @@
         },
         {
           "name": "player",
+          "writable": true,
           "signer": true
         }
       ],
@@ -50,7 +51,7 @@
           "signer": true
         },
         {
-          "name": "host",
+          "name": "player1",
           "writable": true,
           "signer": true
         },
@@ -59,7 +60,20 @@
           "address": "11111111111111111111111111111111"
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "player2",
+          "type": "pubkey"
+        },
+        {
+          "name": "player3",
+          "type": "pubkey"
+        },
+        {
+          "name": "player4",
+          "type": "pubkey"
+        }
+      ]
     },
     {
       "name": "join_game",
@@ -85,59 +99,6 @@
         }
       ],
       "args": []
-    },
-    {
-      "name": "play_card",
-      "discriminator": [
-        63,
-        150,
-        161,
-        24,
-        68,
-        231,
-        108,
-        9
-      ],
-      "accounts": [
-        {
-          "name": "game",
-          "writable": true
-        },
-        {
-          "name": "player",
-          "signer": true
-        }
-      ],
-      "args": [
-        {
-          "name": "card_code",
-          "type": "string"
-        }
-      ]
-    },
-    {
-      "name": "start_game",
-      "discriminator": [
-        249,
-        47,
-        252,
-        172,
-        184,
-        162,
-        245,
-        14
-      ],
-      "accounts": [
-        {
-          "name": "game",
-          "writable": true
-        },
-        {
-          "name": "host",
-          "signer": true
-        }
-      ],
-      "args": []
     }
   ],
   "accounts": [
@@ -158,8 +119,8 @@
   "errors": [
     {
       "code": 6000,
-      "name": "GameFull",
-      "msg": "Game is full"
+      "name": "PlayerNotInGame",
+      "msg": "Player is not part of this game"
     },
     {
       "code": 6001,
@@ -168,48 +129,13 @@
     },
     {
       "code": 6002,
-      "name": "NeedFourPlayers",
-      "msg": "Need exactly 4 players to start"
+      "name": "PlayerAlreadyJoined",
+      "msg": "Player has already joined"
     },
     {
       "code": 6003,
-      "name": "NotGameHost",
-      "msg": "Only the host can perform this action"
-    },
-    {
-      "code": 6004,
-      "name": "GameNotActive",
-      "msg": "Game is not active"
-    },
-    {
-      "code": 6005,
-      "name": "NotPlayerTurn",
-      "msg": "Not player's turn"
-    },
-    {
-      "code": 6006,
-      "name": "InvalidCard",
-      "msg": "Invalid card played"
-    },
-    {
-      "code": 6007,
-      "name": "InvalidCardCode",
-      "msg": "Invalid card code format"
-    },
-    {
-      "code": 6008,
-      "name": "TooManyCards",
-      "msg": "Too many cards to declare UNO"
-    },
-    {
-      "code": 6009,
-      "name": "InvalidCardCount",
-      "msg": "Invalid card count"
-    },
-    {
-      "code": 6010,
-      "name": "PlayerAlreadyJoined",
-      "msg": "Player has already joined"
+      "name": "UnauthorizedGameEnd",
+      "msg": "Only the host can end the game"
     }
   ],
   "types": [
@@ -227,10 +153,10 @@
             }
           },
           {
-            "name": "card_type",
+            "name": "value",
             "type": {
               "defined": {
-                "name": "CardType"
+                "name": "CardValue"
               }
             }
           }
@@ -261,7 +187,7 @@
       }
     },
     {
-      "name": "CardType",
+      "name": "CardValue",
       "type": {
         "kind": "enum",
         "variants": [
@@ -295,12 +221,24 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "host",
+            "name": "current_game_id",
+            "type": "u64"
+          },
+          {
+            "name": "player1",
             "type": "pubkey"
           },
           {
-            "name": "current_players",
-            "type": "u8"
+            "name": "player2",
+            "type": "pubkey"
+          },
+          {
+            "name": "player3",
+            "type": "pubkey"
+          },
+          {
+            "name": "player4",
+            "type": "pubkey"
           },
           {
             "name": "game_state",
@@ -329,6 +267,10 @@
             }
           },
           {
+            "name": "current_players",
+            "type": "u8"
+          },
+          {
             "name": "players",
             "type": {
               "array": [
@@ -355,10 +297,10 @@
             "name": "Lobby"
           },
           {
-            "name": "Active"
+            "name": "InProgress"
           },
           {
-            "name": "Finished"
+            "name": "Ended"
           }
         ]
       }

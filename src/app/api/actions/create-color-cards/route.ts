@@ -6,30 +6,48 @@ import {
 } from "@solana/actions";
 import { clusterApiUrl, Connection, PublicKey, Transaction } from "@solana/web3.js";
 import { BN, Program } from "@coral-xyz/anchor";
-import { GuessingGame } from "@/common/guessing_game";
-import idl from "@/common/idl/guessing_game.json";
+import { ColorCards } from "@/common/color_card";
+import idl from "@/common/idl/uno_game.json";
 import { deriveChallangePda, getIconUrl } from "@/common/helper/guess.helper";
 
 const headers = createActionHeaders();
 
 export const GET = async (req: Request) => {
   const payload: ActionGetResponse = {
-    title: "Create a Guess Challenge",
+    title: "Create a Uno Game",
     icon: await getIconUrl(),
-    description: "Create a number guessing challenge. Others will try to guess your secret number!",
-    label: "Create Guess Challenge",
+    description: "Create an uno game where 4 player compete within themself to see who uno's the other",
+    label: "Create Uno Game",
     links: {
       actions: [
         {
           type: "transaction",
-          label: "Create a Guess Challenge",
-          href: "/api/actions/create-guess-challange?secret-number={secret-number}",
+          label: "Create an Uno Game",
+          href: "/api/actions/create-color-cards?player2={player2}&player3={player3}&player4={player4}",
           parameters: [
             {
-              name: "secret-number",
-              label: "Enter Your Secret Number",
+              name: "player-1",
+              label: "Enter the wallet address of player1",
               required: true,
-              type: "number",
+              type: "text",
+            },
+            {
+              name: "player-2",
+              label: "Enter the wallet address of player2",
+              required: true,
+              type: "text",
+            },
+            {
+              name: "player-3",
+              label: "Enter the wallet address of player3",
+              required: true,
+              type: "text",
+            },
+            {
+              name: "player-4",
+              label: "Enter the wallet address of player4",
+              required: true,
+              type: "text",
             },
           ],
         },
@@ -47,16 +65,24 @@ export const POST = async (req: Request) => {
     console.log("Received POST request");
 
     const url = new URL(req.url);
-    const secretNumberStr = url.searchParams.get("secret-number");
-    console.log("Secret number:", secretNumberStr);
+    const player2Address = url.searchParams.get("player2");
+    console.log("Addrress of player2:", player2Address);
 
-    if (!secretNumberStr || isNaN(Number(secretNumberStr))) {
-      console.error("Invalid secret number provided");
-      return new Response(JSON.stringify({ error: "Invalid secret number provided" }), {
-        status: 400,
-        headers,
-      });
-    }
+    const player3Address = url.searchParams.get("player3");
+    console.log("Addrress of player3:", player3Address);
+
+    const player4Address = url.searchParams.get("player4");
+    console.log("Addrress of player4:", player4Address);
+    // const secretNumberStr = url.searchParams.get("secret-number");
+    // console.log("Secret number:", secretNumberStr);
+
+    // if (!secretNumberStr || isNaN(Number(secretNumberStr))) {
+    //   console.error("Invalid secret number provided");
+    //   return new Response(JSON.stringify({ error: "Invalid secret number provided" }), {
+    //     status: 400,
+    //     headers,
+    //   });
+    // }
 
     const body: ActionPostRequest = await req.json();
     console.log("Request body:", body);
@@ -70,25 +96,37 @@ export const POST = async (req: Request) => {
     }
 
     const userAccount = new PublicKey(body.account);
-    console.log("User account:", userAccount.toString());
+    console.log("Player1 account is ", userAccount.toString());
 
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
     console.log("Connection established");
 
-    const program = new Program(idl as GuessingGame, { connection });
+    const program = new Program(idl as ColorCards, { connection });
     console.log("Program initialized");
 
     const { stateAccount, pdaAccount } = await deriveChallangePda(program);
     console.log("pda account", pdaAccount.toJSON());
+    
+    if (!player2Address || !player3Address || !player4Address) {
+      alert("addresses of all the players are necessary")
+      return;
+    }
+
+    const player2PublicKey = new PublicKey(player2Address);
+    const player3PublicKey = new PublicKey(player3Address);
+    const player4PublicKey = new PublicKey(player4Address);
 
     const instruction = await program.methods
-      .initialize(new BN(Number(secretNumberStr)))
+      .initialize_game(
+        player2PublicKey,
+        player3PublicKey,
+        player4PublicKey
+      )
       .accounts({
-        initializer: userAccount,
-        pdaAccount: pdaAccount,
+        player1: userAccount, 
       })
       .instruction();
-    console.log("Instruction created");
+    console.log("Game created");
 
     const blockhash = await connection.getLatestBlockhash();
     console.log("Blockhash:", blockhash);
@@ -104,11 +142,11 @@ export const POST = async (req: Request) => {
       fields: {
         type: "transaction",
         transaction: transaction,
-        message: "created guess challenge",
+        message: "created an uno game",
         links: {
           next: {
             type: "post",
-            href: `/api/actions/create-guess-challange/next?secret-number=${secretNumberStr}&challenge-id=${stateAccount.currentChallengeId}`,
+            href: `/api/actions/create-color-cards/next?game-id=${stateAccount.current_game_id}`, //need to change the currentChallengeId
           },
         },
       },

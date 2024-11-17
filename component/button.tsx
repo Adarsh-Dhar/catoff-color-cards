@@ -6,7 +6,7 @@ export const Button = () => {
     const [blinkURLState, setBlinkUrlState] = useState<string>("");
 
     useEffect(() => {
-        setBlinkUrlState(`https://dial.to/?action=solana-action:${window.location.origin}/api/actions/create-guess-challange&cluster=devnet`);
+        setBlinkUrlState(`https://dial.to/?action=solana-action:${window.location.origin}/api/actions/create-color-cards&cluster=devnet`);
     }, []);
 
     return (
@@ -16,7 +16,7 @@ export const Button = () => {
                 window.location.href = blinkURLState;
             }}
         >
-            Challenge A Friend
+            create a card game
         </button>
     );
 }

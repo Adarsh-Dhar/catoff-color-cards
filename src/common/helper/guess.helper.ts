@@ -1,20 +1,20 @@
 import { BN, Program } from "@coral-xyz/anchor";
 import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
-import { GuessingGame } from "../guessing_game";
-import idl from "@/common/idl/guessing_game.json";
+import { ColorCards } from "../color_card";
+import idl from "@/common/idl/uno_game.json";
 
-export const deriveChallangePda = async (program: Program<GuessingGame>) => {
+export const deriveChallangePda = async (program: Program<ColorCards>) => {
   const [stateAccountPda, _] = await PublicKey.findProgramAddressSync(
     [Buffer.from("guess_state")],
     new PublicKey(idl.address),
   );
 
-  const stateAccount = await program.account.stateAccount.fetch(stateAccountPda);
+  const stateAccount = await program.account.GameState.fetch(stateAccountPda);
 
   const [pda] = await PublicKey.findProgramAddressSync(
     [
       Buffer.from("guess_challenge"),
-      new BN(await stateAccount.currentChallengeId).toBuffer("le", 8),
+      new BN(await stateAccount.current_game_id).toBuffer("le", 8),
       Buffer.alloc(7),
     ],
     new PublicKey(idl.address),
@@ -22,7 +22,7 @@ export const deriveChallangePda = async (program: Program<GuessingGame>) => {
   return { stateAccount, pdaAccount: pda };
 };
 
-export const deriveGuessPdaById = async (
+export const deriveGamePdaById = async (
   challangeId: string,
 ): Promise<{ pdaAccount: PublicKey }> => {
   const [pdaAccount, _] = await PublicKey.findProgramAddressSync(
@@ -33,11 +33,11 @@ export const deriveGuessPdaById = async (
 };
 
 export const initGuessingGame = async (): Promise<{
-  program: Program<GuessingGame>;
+  program: Program<ColorCards>;
   connection: Connection;
 }> => {
   const connection = new Connection(process.env.SOLANA_RPC || clusterApiUrl("devnet"), "confirmed");
-  const program: Program<GuessingGame> = new Program(idl as GuessingGame, { connection });
+  const program: Program<ColorCards> = new Program(idl as ColorCards, { connection });
   return { program, connection };
 };
 
