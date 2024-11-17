@@ -12,7 +12,7 @@ export const Game = () => {
     const player3 = players[2]
     const player4 = players[3]
     
-    const [gameOver, setGameOver] = useState(true)
+    const [gameOver, setGameOver] = useState(false)
     const [winner, setWinner] = useState('')
     const [turn, setTurn] = useState('')
     const [gameNumber, setGameNumber] = useState(0)
